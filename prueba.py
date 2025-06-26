@@ -6,7 +6,7 @@ import mysql.connector
 nlp = spacy.load("en_core_web_sm")
 
 # 2. Texto en lenguaje natural (puede ser inglés o español, pero mejor inglés)
-text = "Show me all users"  # Cambiálo por "Mostrar todos los usuarios" para español
+text = "Show me all users" 
 
 # 3. Procesar texto con spaCy
 doc = nlp(text)

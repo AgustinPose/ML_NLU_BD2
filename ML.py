@@ -2,8 +2,8 @@ import google.generativeai as genai
 import mysql.connector
 
 # --- CONFIGURACIÓN ---
-API_KEY = "AIzaSyDBWpMtDVZ8icLNNeP9uQBT0AkRwq1BMVA"  # Pegá tu API KEY de Gemini aquí
-MODELO_GEMINI = "models/gemini-1.5-flash"  # O prueba con "models/gemini-2.5-pro" si querés
+API_KEY = "AIzaSyDBWpMtDVZ8icLNNeP9uQBT0AkRwq1BMVA" 
+MODELO_GEMINI = "models/gemini-1.5-flash"
 
 # --- INICIALIZACIÓN DEL MODELO ---
 genai.configure(api_key=API_KEY)
