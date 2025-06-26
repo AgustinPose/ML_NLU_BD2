@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Copia los archivos necesarios
 COPY requirements.txt ./
-COPY ML_Gemini.py ./
+COPY ML.py ./
 # Si necesitas el .sql, descomenta la siguiente línea
 # COPY obligatorio_bd2.sql ./
 
@@ -17,4 +17,4 @@ COPY ML_Gemini.py ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Por defecto, ejecuta tu script (podés cambiarlo según quieras)
-CMD ["python", "ML_Gemini.py"]
+CMD ["python", "ML.py"]
