@@ -1,39 +1,26 @@
--- Crear base de datos
-CREATE DATABASE IF NOT EXISTS imdb_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE imdb_demo;
+CREATE DATABASE IF NOT EXISTS books_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE books_demo;
 
--- Tabla de películas
-CREATE TABLE peliculas (
-    id VARCHAR(20) PRIMARY KEY,
+CREATE TABLE libros (
+    isbn VARCHAR(20) PRIMARY KEY,
     titulo VARCHAR(255),
-    tipo VARCHAR(50),
-    anio_estreno INT,
-    duracion INT,
-    genero VARCHAR(100)
+    autor VARCHAR(255),
+    anio_publicacion INT,
+    editorial VARCHAR(255)
 );
 
--- Tabla de personas
-CREATE TABLE personas (
-    id VARCHAR(20) PRIMARY KEY,
-    nombre VARCHAR(255),
-    nacimiento INT,
-    profesion VARCHAR(255)
+CREATE TABLE usuarios (
+    id_usuario INT PRIMARY KEY,
+    localidad VARCHAR(255),
+    pais VARCHAR(255),
+    edad INT
 );
 
--- Relación entre personas y películas (actores, directores, etc.)
-CREATE TABLE actores_peliculas (
-    id_pelicula VARCHAR(20),
-    id_persona VARCHAR(20),
-    rol VARCHAR(100),
-    PRIMARY KEY (id_pelicula, id_persona, rol),
-    FOREIGN KEY (id_pelicula) REFERENCES peliculas(id),
-    FOREIGN KEY (id_persona) REFERENCES personas(id)
-);
-
--- Ratings de películas
-CREATE TABLE ratings (
-    id_pelicula VARCHAR(20) PRIMARY KEY,
-    promedio DECIMAL(3, 1),
-    votos INT,
-    FOREIGN KEY (id_pelicula) REFERENCES peliculas(id)
+CREATE TABLE valoraciones (
+    id_usuario INT,
+    isbn VARCHAR(20),
+    puntuacion INT,
+    PRIMARY KEY (id_usuario, isbn),
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (isbn) REFERENCES libros(isbn)
 );
