@@ -1,21 +1,24 @@
 import google.generativeai as genai
 import mysql.connector
+
+database = input("Ingrese el nombre de la base de datos: ")
+
 conexion = mysql.connector.connect(
-            host="mysql.reto-ucu.net",
-            port=50006,
-            user="xr_g6_admin",
-            password="Bd2025!",
-            database="XR_Grupo6"
+            host="localhost",
+            # port=50006,
+            user="root",
+            password="rootpassword",
+            database=database
         )
 
 cursor = conexion.cursor()
 
 def obtener_esquema():
     try:
-        cursor.execute("""
+        cursor.execute(f"""
             SELECT TABLE_NAME, COLUMN_NAME, COLUMN_TYPE
             FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_SCHEMA = 'XR_Grupo6'
+            WHERE TABLE_SCHEMA = '{database}'
             ORDER BY TABLE_NAME, ORDINAL_POSITION
         """)
         
