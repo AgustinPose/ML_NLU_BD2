@@ -1,8 +1,44 @@
 import google.generativeai as genai
 import mysql.connector
 
+database = input("Ingrese el nombre de la base de datos: ")
+
+conexion = mysql.connector.connect(
+            host="localhost",
+            # port=50006,
+            user="root",
+            password="rootpassword",
+            database=database
+        )
+
+cursor = conexion.cursor()
+
+def obtener_esquema():
+    try:
+        cursor.execute(f"""
+            SELECT TABLE_NAME, COLUMN_NAME, COLUMN_TYPE
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = '{database}'
+            ORDER BY TABLE_NAME, ORDINAL_POSITION
+        """)
+        
+        tablas = {}
+        for tabla, columna, tipo in cursor.fetchall():
+            columnas = tablas.setdefault(tabla, [])
+            columnas.append(f"{columna} {tipo}")
+
+        esquema = ["Tablas:"]
+        for tabla, columnas in tablas.items():
+            esquema.append(f"- {tabla} ({', '.join(columnas)})")
+        
+        return "\n".join(esquema)
+
+    except Exception as e:
+        return f"Error obteniendo esquema: {e}"
+
+
 # --- CONFIGURACIÓN ---
-API_KEY = "AIzaSyDBWpMtDVZ8icLNNeP9uQBT0AkRwq1BMVA" 
+API_KEY = "AIzaSyD1cmFLbjjlwhRe0M8eZ6uOIBNm3ODd_5E" 
 MODELO_GEMINI = "models/gemini-1.5-flash"
 
 # --- INICIALIZACIÓN DEL MODELO ---
@@ -10,20 +46,14 @@ genai.configure(api_key=API_KEY)
 model = genai.GenerativeModel(MODELO_GEMINI)
 
 # --- CONSULTA EN LENGUAJE NATURAL ---
-esquema = """
-Tablas:
-- Ciudadano (ci, nombre, apellido, serie_credencial, nro_circuito)
-- Circuito (nro, es_accesible, id_establecimiento, es_cerrado, se_abrio)
-- Establecimiento (id, nombre, tipo, direccion, id_zona)
-- Zona (id, nombre, id_ciudad)
-- Ciudad (id, nombre, id_departamento)
-"""
+esquema = obtener_esquema()
 
-consulta_natural = "Dame los nombres y apellidos de los ciudadanos que votan en circuitos accesibles de la ciudad de Montevideo."
+consulta_natural = input("Ingrese su consulta en lenguaje natural: ")
 
 
 prompt = f"""{esquema}
-Convertí la siguiente consulta en SQL, solo devolvé el SQL y nada más:
+Teniendo en cuenta el esquema de tablas anterior, convertí la siguiente consulta en un SQL, 
+y optimizándola, solo devolvé el SQL y nada más:
 {consulta_natural}
 """
 
@@ -46,20 +76,10 @@ print(sql_clean)
 
 # --- EJECUTAR SQL EN TU BASE DE DATOS ---
 try:
-    conexion = mysql.connector.connect(
-        host="mysql.reto-ucu.net",
-        port=50006,
-        user="xr_g6_admin",
-        password="Bd2025!",
-        database="XR_Grupo6"
-    )
-    cursor = conexion.cursor()
     cursor.execute(sql_clean)
     resultados = cursor.fetchall()
     print("\n📊 Resultados:")
     for fila in resultados:
         print(fila)
-    cursor.close()
-    conexion.close()
 except Exception as e:
     print("\n❌ Error ejecutando SQL:", e)
